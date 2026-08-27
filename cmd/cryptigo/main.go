@@ -24,7 +24,8 @@ func main() {
 	inFile := cmd.String("in", "", "Input file")
 	outFile := cmd.String("out", "output.enc", "")
 	pass := cmd.String("pass", "", "Password")
-	overwrite := cmd.Bool("overwrite", false, "Delete input after completion") 
+	overwrite := cmd.Bool("overwrite", false, "Overwrite exisitng file with same output file name")
+	cleanup := cmd.Bool("cleanup", false, "Delete input after completion")
 
 	cmd.Parse(os.Args[2:])
 
@@ -35,19 +36,12 @@ func main() {
 	if err := crypt.ValidateInputFile(*inFile); err != nil {
 		fatal(err)
 	}
-	
-	if err := crypt.ValidateOutputFile(*outFile); err != nil {
+
+	if err := crypt.ValidateOutputFile(*outFile, *overwrite); err != nil {
 		fatal(err)
 	}
 
-	if *pass == "" {
-		fmt.Print("Enter Password: ")
-		fmt.Scanln(pass)
-	}
-
-	if err := crypt.ValidatePassword(*pass); err != nil{
-		fatal(err)
-	}
+	crypt.PromptForPassword(pass)
 
 	switch subcommand {
 	case "encrypt":
@@ -56,7 +50,7 @@ func main() {
 		crypt.Decrypt(*inFile, *outFile, *pass)
 	}
 
-	if *overwrite {
+	if *cleanup {
 		err := os.Remove(*inFile)
 		if err != nil {
 			fmt.Printf("Failed to remove input file: %v\n", err)
