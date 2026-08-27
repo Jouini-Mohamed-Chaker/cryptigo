@@ -45,9 +45,13 @@ func main() {
 
 	switch subcommand {
 	case "encrypt":
-		crypt.Encrypt(*inFile, *outFile, *pass)
+		if err := crypt.Encrypt(*inFile, *outFile, *pass); err != nil {
+			fatal(err)
+		}
 	case "decrypt":
-		crypt.Decrypt(*inFile, *outFile, *pass)
+		if err := crypt.Decrypt(*inFile, *outFile, *pass); err != nil {
+			fatal(err)
+		}
 	}
 
 	if *cleanup {

@@ -1,3 +1,5 @@
+> **Note:** .md files are ai generated to guide me because I'm a beginner
+
 ## **File Encrypter/Decrypter CLI** 
 
 ### Core Requirements & Features
